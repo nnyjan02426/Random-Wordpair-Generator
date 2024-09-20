@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         ),
-        home: MyHomePage(),
+        home: HomePage(),
       ),
     );
   }
@@ -27,35 +27,126 @@ class MyApp extends StatelessWidget {
 
 class MyAppState extends ChangeNotifier {
   var current = WordPair.random();
-
   void getNext() {
     current = WordPair.random();
     notifyListeners();
   }
+
+  var favorites = <WordPair>[];
+  void toggleFavorite() {
+    if (favorites.contains(current)) {
+      favorites.remove(current);
+    } else {
+      favorites.add(current);
+    }
+
+    notifyListeners();
+  }
 }
 
-class MyHomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  var selectedPageIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget page;
+    switch (selectedPageIndex) {
+      case 0:
+        page = GenerationPage();
+        print('Page [GenerationPage] selected');
+        break;
+      case 1:
+        page = Placeholder();
+        print('Page [FavoritesPage] selected');
+        break;
+      default:
+        throw UnimplementedError('no widget for $selectedPageIndex');
+    }
+
+    return LayoutBuilder(builder: (context, constraints) {
+      return Scaffold(
+        body: Row(
+          children: [
+            SafeArea(
+              child: NavigationRail(
+                extended: constraints.maxWidth >= 600,
+                destinations: [
+                  NavigationRailDestination(
+                    icon: Icon(Icons.home),
+                    label: Text('Home'),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.favorite),
+                    label: Text('Likes'),
+                  )
+                ],
+                selectedIndex: selectedPageIndex,
+                onDestinationSelected: (value) {
+                  setState(() {
+                    selectedPageIndex = value;
+                  });
+                },
+              ),
+            ),
+            Expanded(
+              child: Container(
+                color: Theme.of(context).colorScheme.primaryContainer,
+                child: page,
+              ),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+}
+
+class GenerationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     var currentPair = appState.current;
 
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('A random idea:'),
-            BigCard(currentPair: currentPair),
-            ElevatedButton(
-              onPressed: () {
-                appState.getNext();
-                print('button pressed!');
-              },
-              child: Text('Next下一個'),
-            )
-          ],
-        ),
+    IconData favoriteIcon;
+    if (appState.favorites.contains(currentPair)) {
+      favoriteIcon = Icons.favorite;
+    } else {
+      favoriteIcon = Icons.favorite_border;
+    }
+
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('A random idea:'),
+          BigCard(currentPair: currentPair),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton.icon(
+                onPressed: () {
+                  appState.toggleFavorite();
+                  print('Favorite Toggled');
+                },
+                icon: Icon(favoriteIcon),
+                label: Text('Like'),
+              ),
+              SizedBox(width: 15),
+              ElevatedButton(
+                onPressed: () {
+                  appState.getNext();
+                  print('button pressed!');
+                },
+                child: Text('Next'),
+              ),
+            ],
+          )
+        ],
       ),
     );
   }
