@@ -38,22 +38,52 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
+    var currentPair = appState.current;
 
     return Scaffold(
-      body: Column(
-        children: [
-          Text('A random idea:'),
-          Text(appState.current.asLowerCase),
-
-          ElevatedButton(onPressed: () {
-              appState.getNext();
-              print('button pressed!');
-            },
-            child: Text('Next下一個'),
-          )
-        ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('A random idea:'),
+            BigCard(currentPair: currentPair),
+            ElevatedButton(
+              onPressed: () {
+                appState.getNext();
+                print('button pressed!');
+              },
+              child: Text('Next下一個'),
+            )
+          ],
+        ),
       ),
     );
   }
 }
 
+class BigCard extends StatelessWidget {
+  const BigCard({
+    super.key,
+    required this.currentPair,
+  });
+
+  final WordPair currentPair;
+
+  @override
+  Widget build(BuildContext context) {
+    // set theme
+    final theme = Theme.of(context);
+
+    final style = theme.textTheme.displayMedium!.copyWith(
+      color: theme.colorScheme.onPrimary,
+    );
+
+    return Card(
+      color: theme.colorScheme.primary,
+      child: Padding(
+        padding: const EdgeInsets.all(25),
+        child: Text(currentPair.asLowerCase, style: style),
+      ),
+    );
+  }
+}
