@@ -128,7 +128,7 @@ class FavoritesPage extends StatelessWidget {
             title: Text(wordPair.asLowerCase),
             onTap: () async {
               await Clipboard.setData(ClipboardData(text: wordPair.asLowerCase));
-              Fluttertoast.showToast(msg: '[${wordPair.asLowerCase}] copied to clipoard', timeInSecForIosWeb: 10);
+              Fluttertoast.showToast(msg: '[${wordPair.asLowerCase}] copied to clipoard');
               print('[${wordPair.asLowerCase}] copied to clipboard');
             },
           ),
