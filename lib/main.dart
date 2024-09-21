@@ -1,6 +1,8 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 void main() {
   runApp(MyApp());
@@ -59,11 +61,9 @@ class _HomePageState extends State<HomePage> {
       case 0:
         page = GenerationPage();
         print('Page [GenerationPage] selected');
-        break;
       case 1:
-        page = Placeholder();
+        page = FavoritesPage();
         print('Page [FavoritesPage] selected');
-        break;
       default:
         throw UnimplementedError('no widget for $selectedPageIndex');
     }
@@ -106,6 +106,38 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+class FavoritesPage extends StatelessWidget {
+  @override
+  Widget build(context) {
+    var appState = context.watch<MyAppState>();
+    if (appState.favorites.isEmpty) {
+      return Center(child: Text('No favorites Saved'),);
+    }
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+      child: ListView(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(20), 
+            child: Text('You have ${appState.favorites.length} favorites'),
+          ),
+          for (var wordPair in appState.favorites) 
+          ListTile(
+            leading: Icon(Icons.favorite),
+            title: Text(wordPair.asLowerCase),
+            onTap: () async {
+              await Clipboard.setData(ClipboardData(text: wordPair.asLowerCase));
+              Fluttertoast.showToast(msg: '[${wordPair.asLowerCase}] copied to clipoard', timeInSecForIosWeb: 10);
+              print('[${wordPair.asLowerCase}] copied to clipboard');
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class GenerationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -125,6 +157,7 @@ class GenerationPage extends StatelessWidget {
         children: [
           Text('A random idea:'),
           BigCard(currentPair: currentPair),
+          SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
