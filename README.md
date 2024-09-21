@@ -1,16 +1,11 @@
-# first_app
+# Random WordPair Generator
+Code and ideas from flutter's codelab, **Your first Flutter App** [link](https://codelabs.developers.google.com/codelabs/flutter-codelab-first)
 
-A new Flutter project.
+## Additional Feature
+I've added a feature for the user to click to copy the WordPairs that have been added to favorites.
+There will be a toast message that tells the user the wordpair's been copied (only on android, ios, web).
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Chinese (Traditional) Guide
+[part 1 - design and format](https://ithelp.ithome.com.tw/articles/10354452)
+[part 2 - NavigationRail, List and LayoutBuilder](https://ithelp.ithome.com.tw/articles/10355094)
+[part 3 - ListView and Clipboard](https://ithelp.ithome.com.tw/articles/10355733)
