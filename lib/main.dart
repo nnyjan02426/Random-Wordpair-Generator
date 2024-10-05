@@ -109,9 +109,11 @@ class _HomePageState extends State<HomePage> {
 class FavoritesPage extends StatelessWidget {
   @override
   Widget build(context) {
-    var appState = context.watch<MyAppState>();
+    var appState = Provider.of<MyAppState>(context);
     if (appState.favorites.isEmpty) {
-      return Center(child: Text('No favorites Saved'),);
+      return Center(
+        child: Text('No favorites Saved'),
+      );
     }
 
     return Padding(
@@ -119,19 +121,21 @@ class FavoritesPage extends StatelessWidget {
       child: ListView(
         children: [
           Padding(
-            padding: const EdgeInsets.all(20), 
+            padding: const EdgeInsets.all(20),
             child: Text('You have ${appState.favorites.length} favorites'),
           ),
-          for (var wordPair in appState.favorites) 
-          ListTile(
-            leading: Icon(Icons.favorite),
-            title: Text(wordPair.asLowerCase),
-            onTap: () async {
-              await Clipboard.setData(ClipboardData(text: wordPair.asLowerCase));
-              Fluttertoast.showToast(msg: '[${wordPair.asLowerCase}] copied to clipoard');
-              print('[${wordPair.asLowerCase}] copied to clipboard');
-            },
-          ),
+          for (var wordPair in appState.favorites)
+            ListTile(
+              leading: Icon(Icons.favorite),
+              title: Text(wordPair.asLowerCase),
+              onTap: () async {
+                await Clipboard.setData(
+                    ClipboardData(text: wordPair.asLowerCase));
+                Fluttertoast.showToast(
+                    msg: '[${wordPair.asLowerCase}] copied to clipoard');
+                print('[${wordPair.asLowerCase}] copied to clipboard');
+              },
+            ),
         ],
       ),
     );
